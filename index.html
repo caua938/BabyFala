@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BabyTalk Plus</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-pink: #FF9BB8;
+            --primary-blue: #89CFF0;
+            --secondary-pink: #FFD1DC;
+            --secondary-blue: #B6D0E2;
+            --accent: #FFD166;
+            --text: #333333;
+            --white: #FFFFFF;
+            --shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--text);
+            min-height: 100vh;
+            background-color: var(--current-bg, var(--primary-pink));
+            background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.4) 0%, transparent 50%);
+            transition: background-color 0.5s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Login Screen */
+        .login-container {
+            background-color: var(--white);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: var(--shadow);
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, var(--primary-pink), var(--primary-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #eee;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: var(--text);
+            border: none;
+            padding: 15px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeIn 0.8s ease;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .app-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: var(--text);
+        }
+
+        .user-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 350px;
+            height: 100vh;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            z-index: 100;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .settings-panel.open {
+            right: 0;
+        }
+
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .settings-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .setting-group {
+            margin-bottom: 25px;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: var(--text);
+        }
+
+        .voice-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .voice-option {
+            padding: 10px 15px;
+            background-color: #f5f5f5;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .voice-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .voice-option.selected {
+            background-color: var(--accent);
+            font-weight: bold;
+        }
+
+        .phrases-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            background-color: var(--white);
+            color: var(--text);
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .category-btn.active {
+            background-color: var(--accent);
+        }
+
+        .phrases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .phrase-btn {
+            border: none;
+            border-radius: 20px;
+            padding: 25px 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 150px;
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .phrase-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0.1));
+            border-radius: 20px;
+        }
+
+        .phrase-btn:hover {
+            transform: translateY(-5px);
+        }
+
+        .phrase-btn .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 99;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .phrases-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .settings-panel {
+                width: 300px;
+            }
+        }
+
+        /* Animations */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .phrase-btn:hover .icon {
+            animation: bounce 0.5s ease;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FFB700;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="container" id="loginContainer">
+        <div class="login-container">
+            <div class="logo">BabyTalk Plus</div>
+            <form class="login-form" id="loginForm">
+                <div class="input-group">
+                    <input type="text" id="username" placeholder="Nome de usuário" required>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <p style="margin-top: 20px;">Não tem conta? <a href="#" id="registerLink">Cadastre-se</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (Hidden Initially) -->
+    <div class="container app-container" id="appContainer">
+        <header>
+            <div class="app-title">BabyTalk Plus</div>
+            <div class="user-controls">
+                <button class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="phrases-container">
+            <div class="categories">
+                <button class="category-btn active" data-category="all">Todas</button>
+                <button class="category-btn" data-category="hunger">Fome</button>
+                <button class="category-btn" data-category="thirst">Sede</button>
+                <button class="category-btn" data-category="sleep">Sono</button>
+                <button class="category-btn" data-category="pain">Dor</button>
+                <button class="category-btn" data-category="play">Brincar</button>
+                <button class="category-btn" data-category="hygiene">Higiene</button>
+                <button class="category-btn" data-category="feelings">Sentimentos</button>
+            </div>
+
+            <div class="phrases-grid">
+                <!-- Fome -->
+                <button class="phrase-btn" data-category="hunger" onclick="speak('Estou com fome!')">
+                    <span class="icon">🍼</span>
+                    Estou com fome!
+                </button>
+                <button class="phrase-btn" data-category="hunger" onclick="speak('Quero comer!')">
+                    <span class="icon">🍽️</span>
+                    Quero comer!
+                </button>
+                <button class="phrase-btn" data-category="hunger" onclick="speak('Quero leite!')">
+                    <span class="icon">🥛</span>
+                    Quero leite!
+                </button>
+                
+                <!-- Sede -->
+                <button class="phrase-btn" data-category="thirst" onclick="speak('Estou com sede!')">
+                    <span class="icon">💧</span>
+                    Estou com sede!
+                </button>
+                <button class="phrase-btn" data-category="thirst" onclick="speak('Quero água!')">
+                    <span class="icon">🚰</span>
+                    Quero água!
+                </button>
+                
+                <!-- Sono -->
+                <button class="phrase-btn" data-category="sleep" onclick="speak('Estou com sono!')">
+                    <span class="icon">😴</span>
+                    Estou com sono!
+                </button>
+                <button class="phrase-btn" data-category="sleep" onclick="speak('Quero dormir!')">
+                    <span class="icon">🛏️</span>
+                    Quero dormir!
+                </button>
+                
+                <!-- Dor -->
+                <button class="phrase-btn" data-category="pain" onclick="speak('Estou com dor!')">
+                    <span class="icon">😣</span>
+                    Estou com dor!
+                </button>
+                <button class="phrase-btn" data-category="pain" onclick="speak('Minha barriga dói!')">
+                    <span class="icon">🤢</span>
+                    Minha barriga dói!
+                </button>
+                <button class="phrase-btn" data-category="pain" onclick="speak('Minha cabeça dói!')">
+                    <span class="icon">🤕</span>
+                    Minha cabeça dói!
+                </button>
+                
+                <!-- Brincar -->
+                <button class="phrase-btn" data-category="play" onclick="speak('Quero brincar!')">
+                    <span class="icon">🧸</span>
+                    Quero brincar!
+                </button>
+                <button class="phrase-btn" data-category="play" onclick="speak('Me pega!')">
+                    <span class="icon">👐</span>
+                    Me pega!
+                </button>
+                <button class="phrase-btn" data-category="play" onclick="speak('Quero meu brinquedo!')">
+                    <span class="icon">🚗</span>
+                    Quero meu brinquedo!
+                </button>
+                
+                <!-- Higiene -->
+                <button class="phrase-btn" data-category="hygiene" onclick="speak('Preciso trocar!')">
+                    <span class="icon">🧷</span>
+                    Preciso trocar!
+                </button>
+                <button class="phrase-btn" data-category="hygiene" onclick="speak('Quero ir ao banheiro!')">
+                    <span class="icon">🚽</span>
+                    Quero ir ao banheiro!
+                </button>
+                
+                <!-- Sentimentos -->
+                <button class="phrase-btn" data-category="feelings" onclick="speak('Estou feliz!')">
+                    <span class="icon">😊</span>
+                    Estou feliz!
+                </button>
+                <button class="phrase-btn" data-category="feelings" onclick="speak('Estou triste!')">
+                    <span class="icon">😢</span>
+                    Estou triste!
+                </button>
+                <button class="phrase-btn" data-category="feelings" onclick="speak('Estou com medo!')">
+                    <span class="icon">😨</span>
+                    Estou com medo!
+                </button>
+                <button class="phrase-btn" data-category="feelings" onclick="speak('Me ajuda!')">
+                    <span class="icon">🆘</span>
+                    Me ajuda!
+                </button>
+                <button class="phrase-btn" data-category="feelings" onclick="speak('Não gostei!')">
+                    <span class="icon">😠</span>
+                    Não gostei!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Panel -->
+    <div class="overlay" id="overlay"></div>
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+            <div class="settings-title">Configurações</div>
+            <button class="close-settings" id="closeSettings">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="setting-group">
+            <div class="setting-label">Cor de Fundo</div>
+            <div class="color-options">
+                <div class="color-option selected" style="background-color: #FF9BB8;" data-color="pink"></div>
+                <div class="color-option" style="background-color: #89CFF0;" data-color="blue"></div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <div class="setting-label">Voz</div>
+            <div class="voice-options">
+                <div class="voice-option selected" data-voice="feminina">
+                    <i class="fas fa-female"></i> Voz Feminina
+                </div>
+                <div class="voice-option" data-voice="masculina">
+                    <i class="fas fa-male"></i> Voz Masculina
+                </div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <div class="setting-label">Volume</div>
+            <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.7">
+        </div>
+        
+        <button class="btn" style="margin-top: 30px; width: 100%;" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i> Sair
+        </button>
+    </div>
+
+    <script>
+        // DOM Elements
+        const loginContainer = document.getElementById('loginContainer');
+        const appContainer = document.getElementById('appContainer');
+        const loginForm = document.getElementById('loginForm');
+        const registerLink = document.getElementById('registerLink');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeSettings = document.getElementById('closeSettings');
+        const overlay = document.getElementById('overlay');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const colorOptions = document.querySelectorAll('.color-option');
+        const voiceOptions = document.querySelectorAll('.voice-option');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        const phraseBtns = document.querySelectorAll('.phrase-btn');
+
+        // App State
+        let currentUser = null;
+        let currentBg = 'pink';
+        let currentVoice = 'feminina';
+        let currentVolume = 0.7;
+        const synth = window.speechSynthesis;
+
+        // Voices cache
+        let voices = [];
+        let femaleVoice = null;
+        let maleVoice = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for speech support
+            if (!('speechSynthesis' in window)) {
+                alert('Seu navegador não suporta síntese de voz. Por favor, use Chrome, Edge ou Safari.');
+            }
+
+            // Load voices
+            synth.onvoiceschanged = loadVoices;
+            loadVoices();
+
+            // Event Listeners
+            loginForm.addEventListener('submit', handleLogin);
+            registerLink.addEventListener('click', handleRegister);
+            settingsBtn.addEventListener('click', openSettings);
+            closeSettings.addEventListener('click', closeSettingsPanel);
+            overlay.addEventListener('click', closeSettingsPanel);
+            volumeSlider.addEventListener('input', updateVolume);
+            logoutBtn.addEventListener('click', handleLogout);
+
+            // Color options
+            colorOptions.forEach(option => {
+                option.addEventListener('click', changeBackgroundColor);
+            });
+
+            // Voice options
+            voiceOptions.forEach(option => {
+                option.addEventListener('click', changeVoice);
+            });
+
+            // Category filtering
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', filterPhrases);
+            });
+        });
+
+        function loadVoices() {
+            voices = synth.getVoices();
+            
+            // Find Portuguese voices
+            const ptVoices = voices.filter(voice => 
+                voice.lang.includes('pt') || voice.lang.includes('PT')
+            );
+            
+            // Try to find female and male voices
+            femaleVoice = ptVoices.find(voice => 
+                voice.name.includes('Female') || voice.name.includes('feminina')
+            ) || ptVoices[0];
+            
+            maleVoice = ptVoices.find(voice => 
+                voice.name.includes('Male') || voice.name.includes('masculina')
+            ) || ptVoices[ptVoices.length - 1] || ptVoices[0];
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple validation (in a real app, you'd check with a server)
+            if (username && password) {
+                currentUser = username;
+                loginContainer.style.display = 'none';
+                appContainer.style.display = 'flex';
+                
+                // Apply saved preferences (in a real app, you'd load from server)
+                applyPreferences();
+            } else {
+                alert('Por favor, preencha todos os campos!');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            alert('Em uma aplicação real, isso abriria um formulário de cadastro. Para este exemplo, use qualquer nome de usuário e senha.');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            appContainer.style.display = 'none';
+            loginContainer.style.display = 'flex';
+            closeSettingsPanel();
+        }
+
+        function openSettings() {
+            settingsPanel.classList.add('open');
+            overlay.classList.add('active');
+        }
+
+        function closeSettingsPanel() {
+            settingsPanel.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        function changeBackgroundColor(e) {
+            const color = e.target.dataset.color;
+            currentBg = color;
+            
+            // Update UI
+            colorOptions.forEach(option => option.classList.remove('selected'));
+            e.target.classList.add('selected');
+            
+            // Apply color
+            if (color === 'pink') {
+                document.documentElement.style.setProperty('--current-bg', 'var(--primary-pink)');
+                document.documentElement.style.setProperty('--current-secondary', 'var(--secondary-pink)');
+            } else {
+                document.documentElement.style.setProperty('--current-bg', 'var(--primary-blue)');
+                document.documentElement.style.setProperty('--current-secondary', 'var(--secondary-blue)');
+            }
+        }
+
+        function changeVoice(e) {
+            currentVoice = e.target.dataset.voice;
+            
+            // Update UI
+            voiceOptions.forEach(option => option.classList.remove('selected'));
+            e.target.classList.add('selected');
+        }
+
+        function updateVolume() {
+            currentVolume = parseFloat(volumeSlider.value);
+        }
+
+        function filterPhrases() {
+            const category = this.dataset.category;
+            
+            // Update active button
+            categoryBtns.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter phrases
+            phraseBtns.forEach(phrase => {
+                if (category === 'all' || phrase.dataset.category === category) {
+                    phrase.style.display = 'flex';
+                } else {
+                    phrase.style.display = 'none';
+                }
+            });
+        }
+
+        function applyPreferences() {
+            // Apply background color
+            if (currentBg === 'blue') {
+                document.documentElement.style.setProperty('--current-bg', 'var(--primary-blue)');
+                document.documentElement.style.setProperty('--current-secondary', 'var(--secondary-blue)');
+                colorOptions[1].classList.add('selected');
+                colorOptions[0].classList.remove('selected');
+            } else {
+                document.documentElement.style.setProperty('--current-bg', 'var(--primary-pink)');
+                document.documentElement.style.setProperty('--current-secondary', 'var(--secondary-pink)');
+                colorOptions[0].classList.add('selected');
+                colorOptions[1].classList.remove('selected');
+            }
+            
+            // Apply voice preference
+            if (currentVoice === 'masculina') {
+                voiceOptions[1].classList.add('selected');
+                voiceOptions[0].classList.remove('selected');
+            } else {
+                voiceOptions[0].classList.add('selected');
+                voiceOptions[1].classList.remove('selected');
+            }
+            
+            // Apply volume
+            volumeSlider.value = currentVolume;
+        }
+
+        function speak(text) {
+            if (synth.speaking) {
+                synth.cancel();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'pt-BR';
+            utterance.volume = currentVolume;
+            
+            // Set voice based on preference
+            utterance.voice = currentVoice === 'masculina' ? maleVoice : femaleVoice;
+            
+            synth.speak(utterance);
+        }
+    </script>
+</body>
+</html>
